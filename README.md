@@ -1,6 +1,6 @@
 # Conditional WaveGAN
 
-In this project, we use Conditional WaveGAN to synthesis speech/audio conditioned on class labels.
+In this project we developed Conditional WaveGAN to synthesize speech/audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
 
 ## Getting Started
 
@@ -66,6 +66,8 @@ python gpu/train_wavegan.py preview ./gpu/preview
 
 ### Training in TPU
 
+Setting up TPU is explained [here](https://medium.com/@cylee_80935/how-to-use-google-cloud-tpus-177c3a025067).
+
 To begin or resume training
 
 ```
@@ -108,7 +110,7 @@ python tpu/preview.py
 ## Authors
 
 * **Anoop Toffy** - *IIIT Bangalore* - [Personal Website](www.anooptoffy.com)
-* **Chae Young Lee** - *Hankuk Academy of Foreign Studies* - [Homepage](https://github.com/acheketa)* **Chae Young Lee** - *Hankuk Academy of Foreign Studies* - [Homepage](https://github.com/acheketa)
+* **Chae Young Lee** - *Hankuk Academy of Foreign Studies* - [Homepage](https://github.com/acheketa)
 
 ## License
 
@@ -120,3 +122,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Dr. Woo-Jin Han, Netmarble IGS
 * Tensorflow Korea
 * Google
+
+This was supported by [Deep Learning Camp Jeju 2018](http://jeju.dlcamp.org/2018/) which was organized by [TensorFlow Korea User Group](https://facebook.com/groups/TensorFlowKR/).
