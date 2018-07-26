@@ -90,54 +90,6 @@ To generate 20 preview audio samples with two per class
 python tpu/preview.py
 ```
 
-## Synthesized Samples
-
-### Good cases
-
-* one
-
-![Watch the video](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](http://youtu.be/vt5fpE0bzSY)
-
-<audio src="audio.mp3" controls preload></audio>
-
-<audio src="examples/1.wav" controls preload></audio>
-
-<audio src="examples/1.wav">
-
-* four
-
-<audio src="examples/4.wav">
-
-* six
-
-<audio src="examples/6.wav">
-
-* seven
-
-<audio src="examples/7.wav">
-
-* eight
-
-<audio src="examples/8.wav">
-
-* nine
-
-<audio src="examples/9.wav">
-
-### Failed cases
-
-* noise
-
-<audio src="examples/noise.wav">
-
-* incomplete
-
-<audio src="examples/incomplete.wav">
-
-* random
-
-<audio src="examples/random.wav">
-
 ### References
 
 * Donahue, Chris, Julian McAuley, and Miller Puckette. "Synthesizing Audio with Generative Adversarial Networks." arXiv preprint arXiv:1802.04208 (2018). [paper](https://arxiv.org/abs/1802.04208)
