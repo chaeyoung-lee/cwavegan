@@ -90,6 +90,10 @@ To generate 20 preview audio samples with two per class
 python tpu/preview.py
 ```
 
+### Synthesized audio samples
+
+https://colab.research.google.com/drive/1VRyNJQBgiFF-Gi9qlZkOhiBE-KkUaHjw
+
 ### References
 
 * Donahue, Chris, Julian McAuley, and Miller Puckette. "Synthesizing Audio with Generative Adversarial Networks." arXiv preprint arXiv:1802.04208 (2018). [paper](https://arxiv.org/abs/1802.04208)
