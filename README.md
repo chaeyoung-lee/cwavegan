@@ -95,7 +95,11 @@ python tpu/preview.py
 ### Good cases
 
 * one
-!audio[one](1.wav){ size=10 duration=10 cycle=forever }
+
+<audio controls="controls">
+  <source type="audio/wav" src="examples/1.wav"></source>
+  <p>Your browser does not support the audio element.</p>
+</audio>
 
 <audio src="examples/1.wav">
 
