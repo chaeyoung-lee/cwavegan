@@ -6,8 +6,7 @@ In this project we developed Conditional WaveGAN to synthesize speech/audio samp
 
 Generative models are successfully used for image synthesis in the recent years. But when it comes to other modalities like audio, text, and etc, little progress has been made. Recent works focus on generating audio from a generative model in an unsupervised setting. We explore the possibility of using generative models conditioned on class labels.
 
-## Conditioning Methods
-
+## Methods
 
 <img src="images/concat.jpeg"/>
 
