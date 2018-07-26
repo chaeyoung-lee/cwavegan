@@ -96,7 +96,7 @@ python tpu/preview.py
 
 * one
 
-<head><script src="http://api.html5media.info/1.1.8/html5media.min.js"></script></head>
+![Watch the video](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](http://youtu.be/vt5fpE0bzSY)
 
 <audio src="audio.mp3" controls preload></audio>
 
