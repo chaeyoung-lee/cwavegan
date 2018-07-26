@@ -95,7 +95,7 @@ python tpu/preview.py
 ### Good cases
 
 * one
-!audio[one](examples/1.wav){ size=10 duration=10 cycle=forever }
+!audio[one](1.wav){ size=10 duration=10 cycle=forever }
 
 <audio src="examples/1.wav">
 
