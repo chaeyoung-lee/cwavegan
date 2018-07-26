@@ -95,28 +95,29 @@ python tpu/preview.py
 ### Good cases
 
 * one
+!audio[one](examples/1.wav){ size=10 duration=10 cycle=forever }
 
-<audio src="examples/1_177240.wav">
+<audio src="examples/1.wav">
 
 * four
 
-<audio src="examples/4_177835.wav">
+<audio src="examples/4.wav">
 
 * six
 
-<audio src="examples/6_181240.wav">
+<audio src="examples/6.wav">
 
 * seven
 
-<audio src="examples/7_177835.wav">
+<audio src="examples/7.wav">
 
 * eight
 
-<audio src="examples/8_177835.wav">
+<audio src="examples/8.wav">
 
 * nine
 
-<audio src="examples/9_92840.wav">
+<audio src="examples/9.wav">
 
 ### Failed cases
 
@@ -131,8 +132,6 @@ python tpu/preview.py
 * random
 
 <audio src="examples/random.wav">
-
-<audio src="examples/"
 
 ### References
 
