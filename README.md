@@ -8,11 +8,11 @@ Generative models are successfully used for image synthesis in the recent years.
 
 ## Methods
 
-<img src="images/concat.jpeg"/>
+<img src="examples/concat.jpeg"/>
 
-<img src="images/bias.jpeg"/>
+<img src="examples/bias.jpeg"/>
 
-<img src="images/generation.jpeg"/>
+<img src="examples/generation.jpeg"/>
 
 ## Usage
 
@@ -89,6 +89,50 @@ To generate 20 preview audio samples with two per class
 ```
 python tpu/preview.py
 ```
+
+## Synthesized Samples
+
+### Good cases
+
+* one
+
+<audio src="examples/1_177240.wav">
+
+* four
+
+<audio src="examples/4_177835.wav">
+
+* six
+
+<audio src="examples/6_181240.wav">
+
+* seven
+
+<audio src="examples/7_177835.wav">
+
+* eight
+
+<audio src="examples/8_177835.wav">
+
+* nine
+
+<audio src="examples/9_92840.wav">
+
+### Failed cases
+
+* noise
+
+<audio src="examples/noise.wav">
+
+* incomplete
+
+<audio src="examples/incomplete.wav">
+
+* random
+
+<audio src="examples/random.wav">
+
+<audio src="examples/"
 
 ### References
 
