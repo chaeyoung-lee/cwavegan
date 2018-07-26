@@ -96,6 +96,8 @@ python tpu/preview.py
 
 * one
 
+<audio src="examples/1.wav" controls preload></audio>
+
 <audio src="examples/1.wav">
 
 * four
