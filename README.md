@@ -119,12 +119,14 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * We used our baseline mode from waveGAN paper by Chris Donahue et al. (2018)
 
+```
 @article{donahue2018synthesizing,
   title={Synthesizing Audio with Generative Adversarial Networks},
   author={Donahue, Chris and McAuley, Julian and Puckette, Miller},
   journal={arXiv preprint arXiv:1802.04208},
   year={2018}
 }
+```
 
 * TPU Implementations are based on the [DCGAN](https://github.com/tensorflow/tpu/tree/master/models/experimental/dcgan) implemenatation released by Tensorflow Hub. [link](https://github.com/tensorflow/tpu)
 
