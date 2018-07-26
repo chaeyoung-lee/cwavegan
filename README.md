@@ -96,11 +96,6 @@ python tpu/preview.py
 
 * one
 
-<audio controls="controls">
-  <source type="audio/wav" src="examples/1.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
-
 <audio src="examples/1.wav">
 
 * four
