@@ -169,7 +169,7 @@ def model_fn(features, labels, mode, params):
           train_op=joint_op,
           host_call = host_call)
 
-
+  
   elif mode == tf.estimator.ModeKeys.EVAL:
     ########
     # EVAL #

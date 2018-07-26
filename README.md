@@ -8,11 +8,11 @@ Generative models are successfully used for image synthesis in the recent years.
 
 ## Methods
 
-<img src="images/concat.jpeg"/>
+<img src="examples/concat.jpeg"/>
 
-<img src="images/bias.jpeg"/>
+<img src="examples/bias.jpeg"/>
 
-<img src="images/generation.jpeg"/>
+<img src="examples/generation.jpeg"/>
 
 ## Usage
 
@@ -90,6 +90,10 @@ To generate 20 preview audio samples with two per class
 python tpu/preview.py
 ```
 
+### Synthesized audio samples
+
+https://colab.research.google.com/drive/1VRyNJQBgiFF-Gi9qlZkOhiBE-KkUaHjw
+
 ### References
 
 * Donahue, Chris, Julian McAuley, and Miller Puckette. "Synthesizing Audio with Generative Adversarial Networks." arXiv preprint arXiv:1802.04208 (2018). [paper](https://arxiv.org/abs/1802.04208)
@@ -115,10 +119,26 @@ python tpu/preview.py
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
+## Credits
+
+* We used our baseline mode from waveGAN paper by Chris Donahue et al. (2018)
+
+```
+@article{donahue2018synthesizing,
+  title={Synthesizing Audio with Generative Adversarial Networks},
+  author={Donahue, Chris and McAuley, Julian and Puckette, Miller},
+  journal={arXiv preprint arXiv:1802.04208},
+  year={2018}
+}
+```
+
+* TPU Implementations are based on the [DCGAN](https://github.com/tensorflow/tpu/tree/master/models/experimental/dcgan) implemenatation released by Tensorflow Hub. [link](https://github.com/tensorflow/tpu)
+
 ## Acknowledgments
 
 * Dr. Gue Jun Jung, Speech Recognition Tech, SK Telecom
 * Dr. Woo-Jin Han, Netmarble IGS
+* Google Mentors
 * Tensorflow Korea
 * Google
 
