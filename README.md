@@ -8,6 +8,10 @@ Generative models are successfully used for image synthesis in the recent years.
 
 ## Methods
 
+<img src="examples/concept.png">
+
+Can synthesized data be used to train Automatic Speech Recognition (ASR) systems? We tackle this problem by generating samples with large variance. We first build Conditional WaveGAN explored in this Repo to synthesize the samples that we target. Then we use the Discovery GAN architecture to perform style transfer in speech domains. The thus synthesized samples with large variance can be used to build a robust ASR system. Developing the Conditional WaveGAN is a part of this bigger project. Please refer to [this Repo](https://github.com/anooptoffy/DLJeju2018CodeRepoASR).
+
 <img src="examples/concat.jpeg"/>
 
 <img src="examples/bias.jpeg"/>
@@ -112,7 +116,7 @@ https://colab.research.google.com/drive/1VRyNJQBgiFF-Gi9qlZkOhiBE-KkUaHjw
 
 ## Authors
 
-* **Anoop Toffy** - *IIIT Bangalore* - [Personal Website](www.anooptoffy.com)
+* **Anoop Toffy** - *IIIT Bangalore* - [Personal Website](https://www.anooptoffy.com)
 * **Chae Young Lee** - *Hankuk Academy of Foreign Studies* - [Homepage](https://github.com/acheketa)
 
 ## License
