@@ -4,16 +4,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os, time
-
 # Standard Imports
 from absl import flags
-import absl.logging as _logging  # pylint: disable=unused-import
 import numpy as np
 import tensorflow as tf
 
-import tpu_input_toffy
-import tpu_model_toffy
+import tpu_input
+import tpu_model
 from tensorflow.contrib import summary
 from tensorflow.python.estimator import estimator
 
@@ -34,9 +31,8 @@ flags.DEFINE_string(
     'will attempt to automatically detect the GCE project from metadata.')
 
 # Model specific paramenters
-flags.DEFINE_string('model_dir', 'gs://acheketa-ckpt', 'Output model directory')
-flags.DEFINE_integer('noise_dim', 90,
-                     'Number of dimensions for the noise vector')
+flags.DEFINE_string('condition', 'bias', 'Conditioning type bias or concat')
+flags.DEFINE_string('model_dir', 'gs://acheketa3-ckpt', 'Output model directory')
 flags.DEFINE_integer('batch_size', 1024,
                      'Batch size for both generator and discriminator')
 flags.DEFINE_integer('num_shards', None, 'Number of TPU chips')
@@ -60,63 +56,36 @@ dataset = None
 model = None
 
 def model_fn(features, labels, mode, params):
-  def host_call_fn(gs, g_loss, d_loss, real_audio, generated_audio):
-    """Training host call. Creates scalar summaries for training metrics.
-    This function is executed on the CPU and should not directly reference
-    any Tensors in the rest of the `model_fn`. To pass Tensors from the
-    model to the `metric_fn`, provide as part of the `host_call`. See
-    https://www.tensorflow.org/api_docs/python/tf/contrib/tpu/TPUEstimatorSpec
-    for more information.
-    Arguments should match the list of `Tensor` objects passed as the second
-    element in the tuple passed to `host_call`.
-    Args:
-      gs: `Tensor with shape `[batch]` for the global_step
-      g_loss: `Tensor` with shape `[batch]` for the generator loss.
-      d_loss: `Tensor` with shape `[batch]` for the discriminator loss.
-      real_audio: `Tensor` with shape `[batch, 8192, 1]`
-      generated_audio: `Tensor` with shape `[batch, 8192, 1]`
-    Returns:
-      List of summary ops to run on the CPU host.
-    """
-    gs = gs[0]
-    with summary.create_file_writer(FLAGS.model_dir).as_default():
-        with summary.always_record_summaries():
-            summary.scalar('g_loss', g_loss, step=gs)
-            summary.scalar('d_loss', d_loss, step=gs)
-            summary.audio('real_audio', real_audio, sample_rate=_FS, max_outputs=5, step=gs)
-            summary.audio('generated_audio', generated_audio, sample_rate=_FS, max_outputs=5, step=gs)
-    return summary.all_summary_ops()
-
-
   if mode == tf.estimator.ModeKeys.PREDICT:
     ###########
     # PREDICT #
     ###########
     # Pass only noise to PREDICT mode
     random_noise = features['random_noise']
+    random_noise = tf.concat([random_noise, labels], 1)
     predictions = {
-        'generated_audio': model.generator_wavegan(random_noise, train=False)
+        'generated_audio': model.generator_wavegan(random_noise, labels, train=False, bias=is_bias)
     }
-    return tf.contrib.tpu.TPUEstimatorSpec(mode=mode, predictions=predictions)
 
+    return tf.contrib.tpu.TPUEstimatorSpec(mode=mode, predictions=predictions)
 
   # Use params['batch_size'] for the batch size inside model_fn
   batch_size = params['batch_size']   # pylint: disable=unused-variable
   real_audio = features['real_audio']
   random_noise = features['random_noise']
 
-  # concatenate
-  label_fill = tf.expand_dims(labels, axis=2)
-  random_noise = tf.concat([random_noise, labels], 1)
-  real_audio = tf.concat([real_audio, label_fill], 1)
+  # Concatenate
+  if not is_bias:
+      label_fill = tf.expand_dims(labels, axis=2)
+      random_noise = tf.concat([random_noise, labels], 1)
+      real_audio = tf.concat([real_audio, label_fill], 1)
 
   is_training = (mode == tf.estimator.ModeKeys.TRAIN)
-  generated_audio = model.generator_wavegan(random_noise,
-                                     train=is_training)
+  generated_audio = model.generator_wavegan(random_noise, labels, train=is_training, bias=is_bias)
 
   # Get logits from discriminator
-  d_on_data_logits = tf.squeeze(model.discriminator_wavegan(real_audio, reuse=False))
-  d_on_g_logits = tf.squeeze(model.discriminator_wavegan(generated_audio, reuse=True))
+  d_on_data_logits = tf.squeeze(model.discriminator_wavegan(real_audio, labels, reuse=False, bias=is_bias))
+  d_on_g_logits = tf.squeeze(model.discriminator_wavegan(generated_audio, labels, reuse=True, bias=is_bias))
 
   # Calculate discriminator loss
   d_loss_on_data = tf.nn.sigmoid_cross_entropy_with_logits(
@@ -133,20 +102,43 @@ def model_fn(features, labels, mode, params):
       labels=tf.ones_like(d_on_g_logits),
       logits=d_on_g_logits)
 
-  if mode != tf.estimator.ModeKeys.PREDICT:
-    global_step = tf.reshape(tf.train.get_global_step(), [1])
-    g_loss_t = g_loss
-    d_loss_t = d_loss
-    host_call = (host_call_fn, [global_step, g_loss_t, d_loss_t, real_audio, generated_audio])
-
 
   if mode == tf.estimator.ModeKeys.TRAIN:
     #########
     # TRAIN #
     #########
 
-    d_loss = tf.reduce_mean(d_loss)
-    g_loss = tf.reduce_mean(g_loss)
+    # tensorboard summary
+    def host_call_fn(gs, g_loss, d_loss, real_audio, generated_audio):
+        """Training host call. Creates scalar summaries for training metrics.
+        This function is executed on the CPU and should not directly reference
+        any Tensors in the rest of the `model_fn`. To pass Tensors from the
+        model to the `metric_fn`, provide as part of the `host_call`. See
+        https://www.tensorflow.org/api_docs/python/tf/contrib/tpu/TPUEstimatorSpec
+        for more information.
+        Arguments should match the list of `Tensor` objects passed as the second
+        element in the tuple passed to `host_call`.
+        Args:
+          gs: `Tensor with shape `[batch]` for the global_step
+          g_loss: `Tensor` with shape `[batch]` for the generator loss.
+          d_loss: `Tensor` with shape `[batch]` for the discriminator loss.
+          real_audio: `Tensor` with shape `[batch, 8192, 1]`
+          generated_audio: `Tensor` with shape `[batch, 8192, 1]`
+        Returns:
+          List of summary ops to run on the CPU host.
+        """
+        gs = gs[0]
+        with summary.create_file_writer(FLAGS.model_dir).as_default():
+            with summary.always_record_summaries():
+                summary.scalar('g_loss', g_loss, step=gs)
+                summary.scalar('d_loss', d_loss, step=gs)
+                summary.audio('real_audio', real_audio, sample_rate=_FS, max_outputs=10, step=gs)
+                summary.audio('generated_audio', generated_audio, sample_rate=_FS, max_outputs=10, step=gs)
+        return summary.all_summary_ops()
+    global_step = tf.reshape(tf.train.get_global_step(), [1])
+    g_loss_t = g_loss
+    d_loss_t = d_loss
+    host_call = (host_call_fn, [global_step, g_loss_t, d_loss_t, real_audio, generated_audio])
 
     d_optimizer = tf.train.AdamOptimizer(
         learning_rate=FLAGS.learning_rate, beta1=0.5)
@@ -156,6 +148,9 @@ def model_fn(features, labels, mode, params):
     if FLAGS.use_tpu:
       d_optimizer = tf.contrib.tpu.CrossShardOptimizer(d_optimizer)
       g_optimizer = tf.contrib.tpu.CrossShardOptimizer(g_optimizer)
+
+    d_loss = tf.reduce_mean(d_loss)
+    g_loss = tf.reduce_mean(g_loss)
 
     with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
       d_step = d_optimizer.minimize(
@@ -175,7 +170,6 @@ def model_fn(features, labels, mode, params):
           loss=g_loss,
           train_op=joint_op,
           host_call = host_call)
-
 
   elif mode == tf.estimator.ModeKeys.EVAL:
     ########
@@ -199,11 +193,17 @@ def model_fn(features, labels, mode, params):
 
 def generate_input_fn(is_training):
   """Creates input_fn depending on whether the code is training or not."""
-  return dataset.InputFunction(is_training, FLAGS.noise_dim)
+  return dataset.InputFunction(is_training, noise_dim, is_bias)
 
 
 def main(argv):
   del argv
+
+  global is_bias
+  global noise_dim
+  is_bias = True if FLAGS.condition == 'bias' else False
+  noise_dim = 100 if is_bias else 90
+
   tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
       FLAGS.tpu,
       zone=FLAGS.tpu_zone,
@@ -212,6 +212,7 @@ def main(argv):
   config = tf.contrib.tpu.RunConfig(
       cluster=tpu_cluster_resolver,
       model_dir=FLAGS.model_dir,
+      keep_checkpoint_max=None,
       tpu_config=tf.contrib.tpu.TPUConfig(
           num_shards=FLAGS.num_shards,
           iterations_per_loop=FLAGS.iterations_per_loop))
@@ -219,8 +220,8 @@ def main(argv):
   # Set module-level global variable so that model_fn and input_fn can be
   # identical for each different kind of dataset and model
   global dataset, model
-  dataset = tpu_input_toffy
-  model = tpu_model_toffy
+  dataset = tpu_input
+  model = tpu_model
   
   # TPU-based estimator used for TRAIN and EVAL
   est = tf.contrib.tpu.TPUEstimator(
@@ -236,8 +237,6 @@ def main(argv):
       use_tpu=False,
       config=config,
       predict_batch_size=_NUM_VIZ_AUDIO)
-
-  tf.gfile.MakeDirs(os.path.join(FLAGS.model_dir, 'generated_images'))
 
   current_step = estimator._load_global_step_from_checkpoint_dir(FLAGS.model_dir)   # pylint: disable=protected-access,line-too-long
   tf.logging.info('Starting training for %d steps, current step: %d' %

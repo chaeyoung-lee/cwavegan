@@ -3,5 +3,5 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7 (tensorflow)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 2.7.13 (sftp://acheketa@35.202.130.151:22/usr/bin/python) (2)" project-jdk-type="Python SDK" />
 </project>

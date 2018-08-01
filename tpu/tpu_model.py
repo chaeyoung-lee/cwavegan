@@ -6,6 +6,16 @@ from __future__ import print_function
 
 import tensorflow as tf
 
+def tf_repeat(output, idx, dim1, dim2, bias):
+    # tensor equivalent of np.repeat
+    # 1d to 3d array tensor
+    if bias == True:
+        idx = tf.tile(idx, [1, dim1 * dim2])
+        idx = tf.reshape(idx, [-1, dim1, dim2])
+        return output * idx
+    else:
+        return output
+
 def conv1d_transpose(
     inputs,
     filters,
@@ -45,17 +55,19 @@ def apply_phaseshuffle(x, rad, pad_type='reflect'):
 
 
 """
-  Input: [None, 8192, 1]
+  Input: [None, 16384, 1]
   Output: [None] (linear output)
 """
 def discriminator_wavegan(
     x,
+    labels,
     kernel_len=25,
     dim=64,
     use_batchnorm=True,
     phaseshuffle_rad=0,
     reuse=False,
-    scope='Discriminator'):
+    scope='Discriminator',
+    bias=False):
     with tf.variable_scope(scope, reuse=reuse):
         batch_size = tf.shape(x)[0]
 
@@ -74,12 +86,14 @@ def discriminator_wavegan(
             # [8192, 1] -> [4096, 64]
             output = x
             output = tf.layers.conv1d(output, dim, kernel_len, 2, padding='SAME', name='downconv_0')
+            output = tf_repeat(output, labels, 4096, dim, bias)
             output = lrelu(output)
             output = phaseshuffle(output)
 
             # Layer 1
             # [4096, 64] -> [1024, 128]
             output = tf.layers.conv1d(output, dim * 2, kernel_len, 4, padding='SAME', name='downconv_1')
+            bias = tf_repeat(output, labels, 1024, dim * 2, bias)
             output = batchnorm(output)
             output = lrelu(output)
             output = phaseshuffle(output)
@@ -87,6 +101,7 @@ def discriminator_wavegan(
             # Layer 2
             # [1024, 128] -> [256, 256]
             output = tf.layers.conv1d(output, dim * 4, kernel_len, 4, padding='SAME', name='downconv_2')
+            bias = tf_repeat(output, labels, 256, dim * 4, bias)
             output = batchnorm(output)
             output = lrelu(output)
             output = phaseshuffle(output)
@@ -94,6 +109,7 @@ def discriminator_wavegan(
             # Layer 3
             # [256, 256] -> [64, 512]
             output = tf.layers.conv1d(output, dim * 8, kernel_len, 4, padding='SAME', name='downconv_3')
+            bias = tf_repeat(output, labels, 64, dim * 8, bias)
             output = batchnorm(output)
             output = lrelu(output)
             output = phaseshuffle(output)
@@ -101,6 +117,7 @@ def discriminator_wavegan(
             # Layer 4
             # [64, 512] -> [16, 1024]
             output = tf.layers.conv1d(output, dim * 16, kernel_len, 4, padding='SAME', name='downconv_4')
+            bias = tf_repeat(output, labels, 16, dim * 16, bias)
             output = batchnorm(output)
             output = lrelu(output)
 
@@ -118,17 +135,18 @@ def discriminator_wavegan(
 
 """
   Input: [None, 100]
-  Output: [None, 8192, 1]
+  Output: [None, 16384, 1]
 """
 def generator_wavegan(
     z,
+    labels,
     kernel_len=25,
     dim=64,
     use_batchnorm=True,
     upsample='zeros',
     train=False,
-    scope='Generator'
-    ):
+    scope='Generator',
+    bias=False):
     with tf.variable_scope(scope, reuse=tf.AUTO_REUSE):
         batch_size = tf.shape(z)[0]
 
@@ -143,6 +161,7 @@ def generator_wavegan(
         with tf.variable_scope('z_project'):
             output = tf.layers.dense(output, 4 * 4 * dim * 16)
             output = tf.reshape(output, [batch_size, 16, dim * 16])
+            bias = tf_repeat(output, labels, 16, dim * 16, bias)
             output = batchnorm(output)
         output = tf.nn.relu(output)
 
@@ -150,6 +169,7 @@ def generator_wavegan(
         # [16, 1024] -> [64, 512]
         with tf.variable_scope('upconv_0'):
             output = conv1d_transpose(output, dim * 8, kernel_len, 4, upsample=upsample)
+            bias = tf_repeat(output, labels, 64, dim * 8, bias)
             output = batchnorm(output)
         output = tf.nn.relu(output)
 
@@ -157,6 +177,7 @@ def generator_wavegan(
         # [64, 512] -> [256, 256]
         with tf.variable_scope('upconv_1'):
             output = conv1d_transpose(output, dim * 4, kernel_len, 4, upsample=upsample)
+            bias = tf_repeat(output, labels, 256, dim * 4, bias)
             output = batchnorm(output)
         output = tf.nn.relu(output)
 
@@ -164,6 +185,7 @@ def generator_wavegan(
         # [256, 256] -> [1024, 128]
         with tf.variable_scope('upconv_2'):
             output = conv1d_transpose(output, dim * 2, kernel_len, 4, upsample=upsample)
+            bias = tf_repeat(output, labels, 1024, dim * 2, bias)
             output = batchnorm(output)
         output = tf.nn.relu(output)
 
@@ -171,15 +193,16 @@ def generator_wavegan(
         # [1024, 128] -> [4096, 64]
         with tf.variable_scope('upconv_3'):
             output = conv1d_transpose(output, dim, kernel_len, 4, upsample=upsample)
+            bias = tf_repeat(output, labels, 4096, dim, bias)
             output = batchnorm(output)
         output = tf.nn.relu(output)
 
         # Layer 4
         # [4096, 64] -> [8192, 1]
         with tf.variable_scope('upconv_4'):
-            #output = conv1d_transpose(output, 1, kernel_len, 4, upsample=upsample)
+            # output = conv1d_transpose(output, 1, kernel_len, 4, upsample=upsample)
             output = conv1d_transpose(output, 1, kernel_len, 2, upsample=upsample)
-        
+            bias = tf_repeat(output, labels, 8192, 1, bias)
         output = tf.nn.tanh(output)
 
         # Automatically update batchnorm moving averages every time G is used during training
@@ -191,3 +214,4 @@ def generator_wavegan(
                 output = tf.identity(output)
 
         return output
+
