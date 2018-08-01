@@ -16,7 +16,7 @@ from functools import reduce
   Constants
 """
 _FS = 16000
-_WINDOW_LEN = 16374
+_WINDOW_LEN = 8192
 _D_Z = 90
 _D_Y = 10
 

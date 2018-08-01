@@ -35,6 +35,7 @@ def conv1d_transpose(
   else:
     raise NotImplementedError
 
+
 """
   Input: [None, 100]
   Output: [None, 16384, 1]
@@ -193,7 +194,5 @@ def WaveGANDiscriminator(
   # Connect to single logit
   with tf.variable_scope('output'):
     output = tf.layers.dense(output, 1)[:, 0]
-
-  # Don't need to aggregate batchnorm update ops like we do for the generator because we only use the discriminator for training
 
   return output
