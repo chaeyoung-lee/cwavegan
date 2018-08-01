@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98db6828-e5e7-4600-a5e5-90d3e2567fac" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/remote-mappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cwavegan.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cwavegan.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tpu/bias_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/tpu/bias_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tpu/tpu_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/tpu/tpu_input.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tpu/tpu_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/tpu/tpu_main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,7 +15,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/cwavegan$concat_main.coverage" NAME="concat_main Coverage Results" MODIFIED="1533096202345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tpu" />
     <SUITE FILE_PATH="coverage/cwavegan$bias_main.coverage" NAME="bias_main Coverage Results" MODIFIED="1533096220969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tpu" />
-    <SUITE FILE_PATH="coverage/cwavegan$tpu_main.coverage" NAME="tpu_main Coverage Results" MODIFIED="1533104436709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tpu" />
+    <SUITE FILE_PATH="coverage/cwavegan$tpu_main.coverage" NAME="tpu_main Coverage Results" MODIFIED="1533110534743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tpu" />
     <SUITE FILE_PATH="coverage/cwavegan$bias_main_x.coverage" NAME="bias_main_x Coverage Results" MODIFIED="1533097339969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tpu" />
   </component>
   <component name="FileEditorManager">
@@ -27,8 +23,8 @@
       <file leaf-file-name="tpu_input.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tpu/tpu_input.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="69" selection-start-line="69" selection-end-line="69" />
+            <state relative-caret-position="313">
+              <caret line="52" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="e#755#793#0" expanded="true" />
                 <element signature="e#891#1381#0" />
@@ -37,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tpu_main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tpu_main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tpu/tpu_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="907">
-              <caret line="198" column="15" lean-forward="true" selection-start-line="198" selection-start-column="15" selection-end-line="198" selection-end-column="15" />
+            <state relative-caret-position="202">
+              <caret line="92" column="30" lean-forward="true" selection-start-line="92" selection-start-column="30" selection-end-line="92" selection-end-column="30" />
               <folding>
                 <element signature="e#6336#7533#0" />
                 <element signature="e#4207#5643#0" />
@@ -51,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tpu_model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tpu_model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tpu/tpu_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+            <state relative-caret-position="2160">
+              <caret line="124" column="41" lean-forward="true" selection-start-line="124" selection-start-column="41" selection-end-line="124" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -65,7 +61,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>_window_len</find>
-      <find>window_len</find>
       <find>host_call</find>
       <find>global_step</find>
       <find>learning_rate</find>
@@ -83,8 +78,11 @@
       <find>batch_size</find>
       <find>argv</find>
       <find>bias</find>
-      <find>is_bias</find>
+      <find>data_file</find>
+      <find>config</find>
       <find>train</find>
+      <find>is_bias</find>
+      <find>window_len</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -100,9 +98,9 @@
         <option value="$PROJECT_DIR$/gpu/train_wavegan.py" />
         <option value="$PROJECT_DIR$/gpu/wavegan.py" />
         <option value="$PROJECT_DIR$/tpu/concat_main.py" />
-        <option value="$PROJECT_DIR$/tpu/tpu_input.py" />
-        <option value="$PROJECT_DIR$/tpu/tpu_main.py" />
         <option value="$PROJECT_DIR$/tpu/tpu_model.py" />
+        <option value="$PROJECT_DIR$/tpu/tpu_main.py" />
+        <option value="$PROJECT_DIR$/tpu/tpu_input.py" />
       </list>
     </option>
   </component>
@@ -274,7 +272,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="File Transfer" order="8" weight="0.32969698" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32969698" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34060606" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
@@ -615,10 +613,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tpu/tpu_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2160">
+          <caret line="124" column="41" lean-forward="true" selection-start-line="124" selection-start-column="41" selection-end-line="124" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tpu/tpu_input.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="69" selection-start-line="69" selection-end-line="69" />
+        <state relative-caret-position="313">
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
           <folding>
             <element signature="e#755#793#0" expanded="true" />
             <element signature="e#891#1381#0" />
@@ -628,20 +633,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tpu/tpu_main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="907">
-          <caret line="198" column="15" lean-forward="true" selection-start-line="198" selection-start-column="15" selection-end-line="198" selection-end-column="15" />
+        <state relative-caret-position="202">
+          <caret line="92" column="30" lean-forward="true" selection-start-line="92" selection-start-column="30" selection-end-line="92" selection-end-column="30" />
           <folding>
             <element signature="e#6336#7533#0" />
             <element signature="e#4207#5643#0" />
             <element signature="e#7582#8097#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tpu/tpu_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
         </state>
       </provider>
     </entry>

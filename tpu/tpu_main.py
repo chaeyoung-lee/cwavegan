@@ -31,7 +31,7 @@ flags.DEFINE_string(
     'will attempt to automatically detect the GCE project from metadata.')
 
 # Model specific paramenters
-flags.DEFINE_string('condition', 'bias', 'Conditioning type bias or concat')
+flags.DEFINE_string('condition', 'concat', 'Conditioning type bias or concat')
 flags.DEFINE_string('model_dir', 'gs://acheketa3-ckpt', 'Output model directory')
 flags.DEFINE_integer('batch_size', 1024,
                      'Batch size for both generator and discriminator')

@@ -4,15 +4,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import glob, os
-from absl import flags
 import tensorflow as tf
 
-FLAGS = flags.FLAGS
-
-flags.DEFINE_string('data_file', 'gs://sc09_tf_int/', 'Training .tfrecord data file')
-
-window_len = 8192
 NUM_TRAIN_AUDIO = 60000
 NUM_EVAL_AUDIO = 10000
 
@@ -26,11 +19,10 @@ class InputFunction(object):
     self.bias = bias
     mode = ('train' if is_training
             else 'test')
-    self.data_file = glob.glob(os.path.join(FLAGS.data_file, mode) + '*.tfrecord')
 
   def __call__(self, params):
     """Creates a simple Dataset pipeline."""
-
+    window_len = 8192 if self.bias else 8182
     def parser(serialized_example):
       features = {'samples': tf.FixedLenSequenceFeature([1], tf.float32, allow_missing=True)}
       if self.bias:
@@ -48,16 +40,16 @@ class InputFunction(object):
       wav.set_shape([window_len, 1])
 
       if not self.bias:
-        label.set_shape(1)
+        label.set_shape(10)
 
       return wav, label
 
     batch_size = params['batch_size']
-
+    data_file = 'gs://sc09_tf_int' if self.bias else 'gs://sc09_tf/'
     data_files = []
     for i in range(128):
-      data_file = FLAGS.data_file + 'train-{}-of-128.tfrecord'.format(str(i).zfill(3))
-      data_files.append(data_file)
+      data_root = data_file + 'train-{}-of-128.tfrecord'.format(str(i).zfill(3))
+      data_files.append(data_root)
 
     dataset = tf.data.TFRecordDataset(data_files)
     dataset = dataset.map(parser).cache()
