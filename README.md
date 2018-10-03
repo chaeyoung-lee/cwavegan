@@ -100,7 +100,7 @@ To generate 20 preview audio samples with two per class
 python tpu/preview.py
 ```
 
-### Synthesized audio samples
+### Synthesized audio samples (Demo)
 
 https://colab.research.google.com/drive/1VRyNJQBgiFF-Gi9qlZkOhiBE-KkUaHjw
 
