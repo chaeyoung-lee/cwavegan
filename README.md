@@ -1,6 +1,8 @@
 # Conditional WaveGAN
 
-In this project we developed Conditional WaveGAN to synthesize speech/audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
+This is the official implementation of [Conditional WaveGAN](https://arxiv.org/abs/1809.10636).
+
+In this paper, we developed Conditional WaveGAN to synthesize speech/audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
 
 ## Getting Started
 
