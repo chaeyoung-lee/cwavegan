@@ -1,0 +1,17 @@
+*.pyc
+*.swp
+.vscode
+.idea
+*.mat
+*.pkl
+runs*/
+logs/
+core.*
+eval*/
+result*/
+result*
+logs*/
+weight*/
+.git
+*.md
+__pycache__*/
