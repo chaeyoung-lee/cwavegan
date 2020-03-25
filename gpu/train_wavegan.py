@@ -29,16 +29,16 @@ def train(fps, args):
     x, y = loader.get_batch(fps, args.train_batch_size, _WINDOW_LEN, args.data_first_window, labels=True)
 
   # Make inputs
-  y_fill = tf.expand_dims(y, axis=2)
   z = tf.random_uniform([args.train_batch_size, _D_Z], -1., 1., dtype=tf.float32)
 
   # Concatenate labels
-  x = tf.concat([x, y_fill], 1)
-  z = tf.concat([z, y], 1)
+  # y_fill = tf.expand_dims(y, axis=2)
+  # x = tf.concat([x, y_fill], 1)
+  # z = tf.concat([z, y], 1)
 
   # Make generator
   with tf.variable_scope('G'):
-    G_z = WaveGANGenerator(z, train=True, **args.wavegan_g_kwargs)
+    G_z = WaveGANGenerator(z, y, train=True, **args.wavegan_g_kwargs)
     if args.wavegan_genr_pp:
       with tf.variable_scope('pp_filt'):
         G_z = tf.layers.conv1d(G_z, 1, args.wavegan_genr_pp_len, use_bias=False, padding='same')
@@ -67,7 +67,7 @@ def train(fps, args):
 
   # Make real discriminator
   with tf.name_scope('D_x'), tf.variable_scope('D'):
-    D_x = WaveGANDiscriminator(x, **args.wavegan_d_kwargs)
+    D_x = WaveGANDiscriminator(x, y, **args.wavegan_d_kwargs)
   D_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='D')
 
   # Print D summary
