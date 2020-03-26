@@ -22,7 +22,7 @@ def get_batch(
   def _mapper(example_proto):
     features = {'samples': tf.FixedLenSequenceFeature([1], tf.float32, allow_missing=True)}
     if labels:
-      features['label'] = tf.FixedLenSequenceFeature([], tf.float32, allow_missing=True)
+      features['label'] = tf.FixedLenSequenceFeature([], tf.int64, allow_missing=True)
 
     example = tf.parse_single_example(example_proto, features)
     wav = example['samples']
@@ -46,7 +46,7 @@ def get_batch(
     wav = tf.pad(wav, [[0, window_len - tf.shape(wav)[0]], [0, 0]])
 
     wav.set_shape([window_len, 1])
-    label.set_shape(10)
+    # label.set_shape(10)
 
     if labels:
       return wav, label
@@ -60,6 +60,11 @@ def get_batch(
   dataset = dataset.apply(tf.contrib.data.batch_and_drop_remainder(batch_size))
   if repeat:
     dataset = dataset.repeat()
-  iterator = dataset.make_one_shot_iterator()
+  wav, labels = dataset.make_one_shot_iterator().get_next()
+  
+  # bias scaling
+  labels = labels + tf.constant(10, name='fixed', dtype=tf.int64)
+  labels = tf.cast(labels, dtype=tf.float32)
+  labels = tf.reshape(labels, [batch_size, 1])
 
-  return iterator.get_next()
+  return wav, labels

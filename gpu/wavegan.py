@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 def tf_repeat(output, idx, dim1, dim2):
     # tensor equivalent of np.repeat
@@ -67,7 +68,7 @@ def WaveGANGenerator(
     output = tf.layers.dense(output, 4 * 4 * dim * 16)
     output = tf.reshape(output, [batch_size, 16, dim * 16])
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 16, dim * 16, bias)
+  output = tf_repeat(output, labels, 16, dim * 16)
   output = tf.nn.relu(output)
 
   # Layer 0
@@ -75,7 +76,7 @@ def WaveGANGenerator(
   with tf.variable_scope('upconv_0'):
     output = conv1d_transpose(output, dim * 8, kernel_len, 4, upsample=upsample)
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 64, dim * 8, bias)
+  output = tf_repeat(output, labels, 64, dim * 8)
   output = tf.nn.relu(output)
 
   # Layer 1
@@ -83,7 +84,7 @@ def WaveGANGenerator(
   with tf.variable_scope('upconv_1'):
     output = conv1d_transpose(output, dim * 4, kernel_len, 4, upsample=upsample)
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 256, dim * 4, bias)
+  output = tf_repeat(output, labels, 256, dim * 4)
   output = tf.nn.relu(output)
 
   # Layer 2
@@ -91,7 +92,7 @@ def WaveGANGenerator(
   with tf.variable_scope('upconv_2'):
     output = conv1d_transpose(output, dim * 2, kernel_len, 4, upsample=upsample)
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 1024, dim * 2, bias)
+  output = tf_repeat(output, labels, 1024, dim * 2)
   output = tf.nn.relu(output)
 
   # Layer 3
@@ -99,14 +100,14 @@ def WaveGANGenerator(
   with tf.variable_scope('upconv_3'):
     output = conv1d_transpose(output, dim, kernel_len, 4, upsample=upsample)
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 4096, dim, bias)
+  output = tf_repeat(output, labels, 4096, dim)
   output = tf.nn.relu(output)
 
   # Layer 4
   # [4096, 64] -> [8192, 1]
   with tf.variable_scope('upconv_4'):
     output = conv1d_transpose(output, 1, kernel_len, 2, upsample=upsample)
-  output = tf_repeat(output, labels, 8192, 1, bias)
+  output = tf_repeat(output, labels, 8192, 1)
   output = tf.nn.tanh(output)
 
   # Automatically update batchnorm moving averages every time G is used during training
@@ -202,7 +203,7 @@ def WaveGANDiscriminator(
   with tf.variable_scope('downconv_4'):
     output = tf.layers.conv1d(output, dim * 16, kernel_len, 4, padding='SAME')
     output = batchnorm(output)
-  output = tf_repeat(output, labels, 16, dim * 16, bias)
+  output = tf_repeat(output, labels, 16, dim * 16)
   output = lrelu(output)
 
   # Flatten

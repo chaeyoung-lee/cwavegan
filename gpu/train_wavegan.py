@@ -1,5 +1,8 @@
 from __future__ import print_function
-import cPickle as pickle
+try:
+	import cPickle as pickle
+except:
+	import pickle
 import os
 import time
 
@@ -84,7 +87,7 @@ def train(fps, args):
 
   # Make fake discriminator
   with tf.name_scope('D_G_z'), tf.variable_scope('D', reuse=True):
-    D_G_z = WaveGANDiscriminator(G_z, **args.wavegan_d_kwargs)
+    D_G_z = WaveGANDiscriminator(G_z, y, **args.wavegan_d_kwargs)
 
   # Create loss
   D_clip_weights = None
@@ -135,7 +138,7 @@ def train(fps, args):
     differences = G_z - x
     interpolates = x + (alpha * differences)
     with tf.name_scope('D_interp'), tf.variable_scope('D', reuse=True):
-      D_interp = WaveGANDiscriminator(interpolates, **args.wavegan_d_kwargs)
+      D_interp = WaveGANDiscriminator(interpolates, y, **args.wavegan_d_kwargs)
 
     LAMBDA = 10
     gradients = tf.gradients(D_interp, [interpolates])[0]
@@ -207,7 +210,8 @@ def train(fps, args):
     'samp_z_n' int32 []: Sample this many latent vectors
     'samp_z' float32 [samp_z_n, 90]: Resultant latent vectors
     'z:0' float32 [None, 100]: Input latent vectors
-    'flat_pad:0' int32 []: Number of padding samples to use when flattening batch to a single audio file
+    'y:0' float32 [None, _D_Y]: Label vectors
+	  'flat_pad:0' int32 []: Number of padding samples to use when flattening batch to a single audio file
     'G_z:0' float32 [None, 16384, 1]: Generated outputs
     'G_z_int16:0' int16 [None, 16384, 1]: Same as above but quantizied to 16-bit PCM samples
     'G_z_flat:0' float32 [None, 1]: Outputs flattened into single audio file
@@ -239,10 +243,11 @@ def infer(args):
   # Input zo
   z = tf.placeholder(tf.float32, [None, _D_Z + _D_Y], name='z')
   flat_pad = tf.placeholder(tf.int32, [], name='flat_pad')
+  y = tf.placeholder(tf.float32, [None, _D_Y], name='y')
 
   # Execute generator
   with tf.variable_scope('G'):
-    G_z = WaveGANGenerator(z, train=False, **args.wavegan_g_kwargs)
+    G_z = WaveGANGenerator(z, y, train=False, **args.wavegan_g_kwargs)
     if args.wavegan_genr_pp:
       with tf.variable_scope('pp_filt'):
         G_z = tf.layers.conv1d(G_z, 1, args.wavegan_genr_pp_len, use_bias=False, padding='same')
@@ -321,16 +326,18 @@ def preview(args):
 
   # label to one hot vector
   sample_n = 20
-  one_hot = np.zeros([sample_n, _D_Y])
   _zs = _zs[:sample_n]
+  _ys = np.zeros([sample_n, _D_Y])
   for i in range(10):
-    one_hot[2 * i + 1][i] = 1
-    one_hot[2 * i][i] = 1
-  _zs = np.concatenate([_zs, one_hot], 1)
+    _ys[2 * i + 1][i] = 1
+    _ys[2 * i][i] = 1
+    # _ys[2 * i] = i
+    # _ys[2 * i + 1] = i
 
   # Set up graph for generating preview images
   feeds = {}
   feeds[graph.get_tensor_by_name('z:0')] = _zs
+  feeds[graph.get_tensor_by_name('y:0')] = _ys
   feeds[graph.get_tensor_by_name('flat_pad:0')] = _WINDOW_LEN // 2
   fetches = {}
   fetches['step'] = tf.train.get_or_create_global_step()
