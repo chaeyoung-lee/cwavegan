@@ -4,19 +4,11 @@ This is the official implementation of [Conditional WaveGAN](https://arxiv.org/a
 
 In this paper, we developed Conditional WaveGAN to synthesize speech/audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
 
-## Getting Started
+## Motivation
 
-Generative models are successfully used for image synthesis in the recent years. But when it comes to other modalities like audio, text, and etc, little progress has been made. Recent works focus on generating audio from a generative model in an unsupervised setting. We explore the possibility of using generative models conditioned on class labels.
+Generative models are successfully used for image synthesis in the recent years. But when it comes to other modalities like audio, text, and etc, little progress has been made. Recent works focus on generating audio from a generative model in an unsupervised setting. We explore the possibility of using generative models **conditioned on class labels**.
 
 ## Methods
-
-<img src="examples/concept.png">
-
-* Speech style transfer and applications in improving ASR system
-
-Can synthesized data be used to train Automatic Speech Recognition (ASR) systems? We tackle this problem by generating samples with large variety. We first build Conditional WaveGAN explored in this Repo to synthesize the samples that we target. Then we use the Discovery GAN architecture to perform style transfer in speech domains. The thus synthesized samples with large variety can be used to build a robust ASR system. Developing the Conditional WaveGAN is a part of this bigger project. Please refer to [this Repo](https://github.com/anooptoffy/DLJeju2018CodeRepoASR) to know more about our original ideas.
-
-* Conditional WaveGANs
 
 <img src="examples/concat.jpeg"/>
 
@@ -26,7 +18,7 @@ Can synthesized data be used to train Automatic Speech Recognition (ASR) systems
 
 ## Usage
 
-Training can be done in both GPU and TPU settings. Only concatenation based conditioning is available in GPU, whereas bias based conditioning is also available in TPU.
+Training can be done in both GPU and TPU settings. Both versions of code implement bias scaling method.
 
 ### Prerequisites
 
@@ -37,8 +29,8 @@ Training can be done in both GPU and TPU settings. Only concatenation based cond
 
 ### Datasets
 
-1. [TFRecord of SC09](https://drive.google.com/open?id=1qRdAWmjfWwfWIu-Qk7u9KQKGINC52ZwB)
-2. Techsorflow Challenge [Raw SC09](https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data)
+1. Techsorflow Challenge [Raw SC09](https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data)
+2. [TFRecord SC09](https://drive.google.com/open?id=1qRdAWmjfWwfWIu-Qk7u9KQKGINC52ZwB)
 
 Data must assume the form of `tf.Data.TFRecord`. The label data must be in one hot encoded for concatenation based conditioning, whereas it must be simple integers for bias based conditioning. Thus, the code to make the TFRecord differs by the type of conditioning.
 
