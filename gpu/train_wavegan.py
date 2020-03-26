@@ -31,6 +31,11 @@ def train(fps, args):
   with tf.name_scope('loader'):
     x, y = loader.get_batch(fps, args.train_batch_size, _WINDOW_LEN, args.data_first_window, labels=True)
 
+  # bias scaling
+  y = y + tf.constant(10, name='fixed', dtype=tf.int64)
+  y = tf.cast(y, dtype=tf.float32)
+  y = tf.reshape(y, [args.train_batch_size, 1])
+  
   # Make inputs
   z = tf.random_uniform([args.train_batch_size, _D_Z], -1., 1., dtype=tf.float32)
 
@@ -195,11 +200,11 @@ def train(fps, args):
       # Train discriminator
       for i in xrange(args.wavegan_disc_nupdates):
         sess.run(D_train_op)
-
+        
         # Enforce Lipschitz constraint for WGAN
         if D_clip_weights is not None:
           sess.run(D_clip_weights)
-
+        
       # Train generator
       sess.run(G_train_op)
 
@@ -534,6 +539,9 @@ if __name__ == '__main__':
     fps = glob.glob(os.path.join(args.data_dir, split) + '*.tfrecord')
 
   if args.mode == 'train':
+    if len(fps) == 0:
+      raise Exception('Did not find any audio files in specified directory')
+    print('Found {} audio files in specified directory'.format(len(fps)))
     infer(args)
     train(fps, args)
   elif args.mode == 'preview':

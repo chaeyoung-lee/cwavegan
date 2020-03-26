@@ -60,11 +60,6 @@ def get_batch(
   dataset = dataset.apply(tf.contrib.data.batch_and_drop_remainder(batch_size))
   if repeat:
     dataset = dataset.repeat()
-  wav, labels = dataset.make_one_shot_iterator().get_next()
-  
-  # bias scaling
-  labels = labels + tf.constant(10, name='fixed', dtype=tf.int64)
-  labels = tf.cast(labels, dtype=tf.float32)
-  labels = tf.reshape(labels, [batch_size, 1])
+  iterator = dataset.make_one_shot_iterator()
 
-  return wav, labels
+  return iterator.get_next()
