@@ -9,7 +9,7 @@ if __name__  == '__main__':
   import tensorflow as tf
   from tqdm import tqdm
  
-  #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+  os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
   parser = argparse.ArgumentParser()
 
@@ -48,7 +48,7 @@ if __name__  == '__main__':
   if args.labels_whitelist is not None:
     labels_whitelist = set([l.strip() for l in args.labels_whitelist.split(',')])
 
-  audio_fps = glob.glob(os.path.join(args.in_dir, '*.{}'.format(args.ext)))
+  audio_fps = glob.glob(os.path.join(args.in_dir, '*/*.{}'.format(args.ext)))
   random.shuffle(audio_fps)
 
   if args.nshards > 1:
@@ -101,18 +101,19 @@ if __name__  == '__main__':
     for _audio_fp in audio_fps[start_idx:start_idx+npershard]:
       audio_name = os.path.splitext(os.path.split(_audio_fp)[1])[0]
       if args.labels:
-        audio_label, audio_id = audio_name.split('_', 1)
+        audio_id = audio_name.split('_', 1)
+        audio_label = _audio_fp.split('/')[-2]
         
-        a_labels = {"Zero" : 0, 
-            "One" : 1, 
-            "Two" : 2, 
-            "Three" : 3, 
-            "Four" : 4, 
-            "Five" : 5, 
-            "Six" : 6, 
-            "Seven" : 7,
-            "Eight" : 8,
-            "Nine" : 9
+        a_labels = {"zero" : 0, 
+            "one" : 1, 
+            "two" : 2, 
+            "three" : 3, 
+            "four" : 4, 
+            "five" : 5, 
+            "six" : 6, 
+            "seven" : 7,
+            "eight" : 8,
+            "nine" : 9
            }
         audio_label = int(a_labels[audio_label])
         
@@ -133,7 +134,7 @@ if __name__  == '__main__':
 
       for j, _slice in enumerate(_slices):
         example = tf.train.Example(features=tf.train.Features(feature={
-          'id': tf.train.Feature(bytes_list=tf.train.BytesList(value=audio_id)),
+          # 'id': tf.train.Feature(bytes_list=tf.train.BytesList(value=audio_id)),
           'label': tf.train.Feature(int64_list=tf.train.Int64List(value=[audio_label])),
           'slice': tf.train.Feature(int64_list=tf.train.Int64List(value=[j])),
           'samples': tf.train.Feature(float_list=tf.train.FloatList(value=_slice))
