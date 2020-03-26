@@ -30,7 +30,7 @@ Training can be done in both GPU and TPU settings. Both versions of code impleme
 ### Datasets
 
 1. Techsorflow Challenge [Raw SC09](https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data)
-2. [TFRecord SC09](https://drive.google.com/open?id=1qRdAWmjfWwfWIu-Qk7u9KQKGINC52ZwB)
+2. [TFRecord SC09](https://drive.google.com/file/d/1yX5iFZ9sqaD4_9-OhmsISZ1PkDnGjHse/view?usp=sharing)
 
 Data must assume the form of `tf.Data.TFRecord`. The label data must be in one hot encoded for concatenation based conditioning, whereas it must be simple integers for bias based conditioning. Thus, the code to make the TFRecord differs by the type of conditioning.
 
