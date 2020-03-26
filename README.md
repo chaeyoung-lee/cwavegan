@@ -30,25 +30,27 @@ Training can be done in both GPU and TPU settings. Only concatenation based cond
 
 ### Prerequisites
 
-* Tensorflow >= 1.4
-* Python 2.7
+* Tensorflow 1.x.x
+* Python 3.x
+* tqdm
+
 
 ### Datasets
 
-1. [Speech Commands Zero through Nine (SC09)](https://drive.google.com/open?id=1qRdAWmjfWwfWIu-Qk7u9KQKGINC52ZwB)
-2. Techsorflow Challenge [Speech Commands data full](https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data)
+1. [TFRecord of SC09](https://drive.google.com/open?id=1qRdAWmjfWwfWIu-Qk7u9KQKGINC52ZwB)
+2. Techsorflow Challenge [Raw SC09](https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data)
 
 Data must assume the form of `tf.Data.TFRecord`. The label data must be in one hot encoded for concatenation based conditioning, whereas it must be simple integers for bias based conditioning. Thus, the code to make the TFRecord differs by the type of conditioning.
 
 ```
-python make_tfrecord.py \
-	new/sc09/train \
-	new/sc09_tf \
+python3 make_tfrecord_int.py \
+	../sc09/train \
+	../sc09_tf \
 	--name train --labels \
 	--ext wav \
 	--fs 16000 \
 	--nshards 128 \
-	--slice_len 1 \
+	--slice_len 1
 ```
 
 ### Training in GPU
