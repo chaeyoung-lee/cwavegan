@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 
 def tf_repeat(output, idx, dim1, dim2):
     # tensor equivalent of np.repeat

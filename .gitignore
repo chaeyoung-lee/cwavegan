@@ -2,10 +2,13 @@
 *.swp
 .vscode
 .idea
+*.tar.gz
+*.tgz
 *.mat
 *.pkl
 runs*/
 logs/
+train/
 core.*
 eval*/
 result*/
