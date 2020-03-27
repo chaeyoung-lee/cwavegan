@@ -23,7 +23,7 @@ Training can be done in both GPU and TPU settings. Both versions of code impleme
 ### Prerequisites
 
 * Tensorflow 1.x.x
-* Python 3.x
+* Python 2.x, 3.x
 * tqdm
 
 
@@ -49,23 +49,22 @@ python3 make_tfrecord_int.py \
 
 To begin or resume training
 
-```
+```shell
 python gpu/train_wavegan.py train ./gpu/train \
 	--data_dir ./data/customdataset
 ```
 
-To save the checkpoints every specified minutes while training
+To log and monitor training
 
-```
-# save checkpoints every 60 minutes
+```shell
+# saves checkpoints every 60 minutes
 python gpu/backup.py ./gpu/train 60
+
+# generates preview audio files every time a checkpoint is saved
+python gpu/train_wavegan.py preview ./gpu/train
 ```
 
-To generate 20 preview audio samples with two per class
-
-```
-python gpu/train_wavegan.py preview ./gpu/preview
-```
+Note that the training directory for train, backup, and preview must be identical.
 
 ### Training in TPU
 
@@ -74,11 +73,7 @@ Setting up TPU is explained [here](https://medium.com/@cylee_80935/how-to-use-go
 To begin or resume training
 
 ```
-# concatenation based conditioning
-python tpu/concat_main.py
-
-# bias based conditioning
-python tpu/bias_main.py
+python tpu/tpu_main.py
 ```
 
 Create a bucket for backup checkpoints and name it `[CKPT_BUCKET_NAME]-backup`. To save the checkpoints every specified minutes while training
