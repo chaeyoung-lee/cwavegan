@@ -213,9 +213,9 @@ def train(fps, args):
   Creates and saves a MetaGraphDef for simple inference
   Tensors:
     'samp_z_n' int32 []: Sample this many latent vectors
-    'samp_z' float32 [samp_z_n, 90]: Resultant latent vectors
+    'samp_z' float32 [samp_z_n, 100]: Resultant latent vectors
     'z:0' float32 [None, 100]: Input latent vectors
-    'y:0' float32 [None, _D_Y]: Label vectors
+    'y:0' float32 [None, 1]: Label vectors
 	  'flat_pad:0' int32 []: Number of padding samples to use when flattening batch to a single audio file
     'G_z:0' float32 [None, 16384, 1]: Generated outputs
     'G_z_int16:0' int16 [None, 16384, 1]: Same as above but quantizied to 16-bit PCM samples
@@ -246,9 +246,9 @@ def infer(args):
   samp_z = tf.random_uniform([samp_z_n, _D_Z], -1.0, 1.0, dtype=tf.float32, name='samp_z')
 
   # Input zo
-  z = tf.placeholder(tf.float32, [None, _D_Z + _D_Y], name='z')
+  z = tf.placeholder(tf.float32, [None, _D_Z], name='z')
   flat_pad = tf.placeholder(tf.int32, [], name='flat_pad')
-  y = tf.placeholder(tf.float32, [None, _D_Y], name='y')
+  y = tf.placeholder(tf.float32, [None, 1], name='y')
 
   # Execute generator
   with tf.variable_scope('G'):
@@ -329,15 +329,19 @@ def preview(args):
     with open(z_fp, 'wb') as f:
       pickle.dump(_zs, f)
 
-  # label to one hot vector
+  # Create labels
   sample_n = 20
   _zs = _zs[:sample_n]
-  _ys = np.zeros([sample_n, _D_Y])
+  _ys = np.zeros([sample_n])
   for i in range(10):
-    _ys[2 * i + 1][i] = 1
-    _ys[2 * i][i] = 1
-    # _ys[2 * i] = i
-    # _ys[2 * i + 1] = i
+    # one-hot vector
+    # _ys[2 * i + 1][i] = 1
+    # _ys[2 * i][i] = 1
+
+    # integer labels
+    _ys[2 * i] = 10 + i
+    _ys[2 * i + 1] = 10 + i
+  _ys = np.expand_dims(_ys, axis=1)
 
   # Set up graph for generating preview images
   feeds = {}
@@ -381,7 +385,7 @@ def preview(args):
         _step = _fetches['step']
 
       gen_speech = _fetches['G_z_flat_int16']
-      gen_len = len(gen_speech) / sample_n
+      gen_len = int(len(gen_speech) / sample_n)
 
       for i in range(sample_n):
         label = int(i / 2)
