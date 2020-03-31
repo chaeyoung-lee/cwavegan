@@ -1,8 +1,10 @@
 # Conditional WaveGAN
 
-This is the official implementation of [Conditional WaveGAN](https://arxiv.org/abs/1809.10636).
+Official implementation of CWaveGAN | [paper](https://arxiv.org/abs/1809.10636) | [slides](https://github.com/acheketa/cwavegan/tree/master/final_presentation)
 
-In this paper, we developed Conditional WaveGAN to synthesize speech/audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
+**[Chae Young Lee](mailto:acheketa@gmail.com), Anoop Toffy.**
+
+In this paper, we developed Conditional WaveGAN to synthesize speech / audio samples that are conditioned on class labels. The thus synthesized raw audio is used for improving the baseline ASR system.
 
 ## Motivation
 
